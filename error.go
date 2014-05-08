@@ -1,19 +1,41 @@
 package misc
+
 import (
 	"fmt"
 	"os"
+	"runtime"
 )
-func E(desc string, err interface{}) {
+
+func E(desc string, callframe bool, err interface{}) {
 	switch fault := err.(type) {
 	case error:
 		{
 			if fault != nil {
+				if callframe {
+					for i := 1; ; i++ {
+						_, b, c, d := runtime.Caller(i)
+						if !d {
+							break
+						}
+						fmt.Printf("Call From %+v At %+v\n", b, c)
+					}
+				}
 				panic(fmt.Errorf(desc+": %v", err))
 			}
 		}
 	case bool:
 		{
 			if !fault {
+				if callframe {
+
+					for i := 1; ; i++ {
+						_, b, c, d := runtime.Caller(i)
+						if !d {
+							break
+						}
+						fmt.Printf("Call From %+v At %+v\n", b, c)
+					}
+				}
 				panic(fmt.Errorf(desc))
 			}
 		}
